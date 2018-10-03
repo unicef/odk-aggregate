@@ -1,0 +1,29 @@
+version: '2'
+services:
+  odk:
+    build:
+      context: .
+    image: unicef/odk:dev
+    ports:
+      - "8080:${ODK_PORT}"
+      - "8443:${ODK_PORT_SECURE}"
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      - ODK_HOSTNAME
+      - ODK_ADMIN_USERNAME
+      - ODK_AUTH_REALM
+      - ODK_PORT
+      - ODK_PORT_SECURE
+  db:
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD:
+      POSTGRES_USER: odk
+      POSTGRES_DB: odk
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080

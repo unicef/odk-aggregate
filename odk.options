@@ -1,0 +1,25 @@
+optionfile=odk.options
+debuglevel=4
+mode=unattended
+unattendedmodeui=none
+parent_installdir=/odk
+platform=postgresql
+tomcat_http_port=8080
+raw_hostname=localhost
+database_port=5432
+database_hostname=192.168.66.66
+
+jdbc_sqlserver_url=
+jdbc_gae_mysql_instance_name=
+jdbc_gae_mysql_password=
+instance_display_name=ODK eTools
+master_slave_app_id=BBB
+
+jdbc_username=postgres
+jdbc_password=
+jdbc_database=odk
+jdbc_schema=odk
+username=admin
+app_id=etools
+
+
