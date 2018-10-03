@@ -13,7 +13,7 @@ RUN apt-get update \
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY odk.options /files/
-COPY .cache/* /files/
+COPY .cache /files
 
 WORKDIR /files
 RUN ls /files/

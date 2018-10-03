@@ -4,6 +4,7 @@ PIPENV_PYPI_MIRROR?=https://pypi.org/simple/
 DOCKER_IMAGE?=unicef/odk
 DOCKERFILE?=Dockerfile
 BUILD_OPTIONS?=--squash
+RUN_OPTIONS?=--squash
 DEVELOP?="0"
 FLYWAY?=https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/4.0.3/flyway-commandline-4.0.3-linux-x64.tar.gz
 ODK?=https://github.com/opendatakit/aggregate/releases/download/v1.6.1/ODK-Aggregate-v1.6.1-Linux-x64.run
@@ -12,17 +13,24 @@ ODK?=https://github.com/opendatakit/aggregate/releases/download/v1.6.1/ODK-Aggre
 help:
 	@echo 'Usage:                                                         '
 	@echo '   make clean            removes images and containers         '
-	@echo '   make build            build container                       '
+	@echo '   make build            build the image                       '
+	@echo '   make run              run the container                     '
 	@echo '   make push             push image to docker hub              '
+	@echo '   make fullclean        cleanup development environment       '
 	@echo '                                                               '
 
 
 clean:
-	-docker rmi ${DOCKER_IMAGE}:${TARGET}
 	rm -fr ~build
 
 
+fullclean: clean
+	-docker rmi ${DOCKER_IMAGE}:${TARGET}
+	rm -fr .cache .venv
+
+
 build: clean
+	mkdir -p .cache
 	docker build ${BUILD_OPTIONS} \
 		--build-arg DEVELOP=${DEVELOP} \
 		--build-arg VERSION=${TARGET} \
@@ -34,6 +42,7 @@ build: clean
 	docker run \
 		--rm \
 		-p 8080:8080 \
+		${RUN_OPTIONS} \
 		-e ODK_HOSTNAME="${ODK_HOSTNAME}" \
 		-e ODK_ADMIN_USERNAME="${ODK_ADMIN_USERNAME}" \
 		-e ODK_AUTH_REALM="${ODK_AUTH_REALM}" \
@@ -41,9 +50,6 @@ build: clean
 		-e POSTGRES_PASSWORD="${POSTGRES_PASSWORD}" \
 		-e DATABASE_URL="${DATABASE_URL}" \
 		-e CONFIGURE=0 \
-		-v ${PWD}/~build/workdir:/workdir \
-		-v ${PWD}/~build/var:/var/odk \
-		-v ${PWD}/~build/root:/root \
 		-it ${DOCKER_IMAGE}:${TARGET} \
 		${CMD}
 
@@ -55,6 +61,10 @@ cache:
 run:
 	CMD='odk' $(MAKE) .run
 
+debug:
+	CMD='/bin/bash' \
+		RUN_OPTIONS="-v ${PWD}/~build/workdir:/workdir -v ${PWD}/~build/var:/var/odk -v ${PWD}/~build/root:/root" \
+		$(MAKE) .run
 
 shell:
 	CMD='/bin/bash' $(MAKE) .run
