@@ -1,13 +1,28 @@
 CMD?=
 TARGET?=dev
-PIPENV_PYPI_MIRROR?=https://pypi.org/simple/
 DOCKER_IMAGE?=unicef/odk
 DOCKERFILE?=Dockerfile
 BUILD_OPTIONS?=--squash
-RUN_OPTIONS?=--squash
+RUN_OPTIONS?=
 DEVELOP?="0"
+PREFIX=`basename ${PWD}`
+
+
+ODK_HOSTNAME?=
+ODK_ADMIN_USER?=
+ODK_ADMIN_USERNAME?=admin
+ODK_AUTH_REALM?=ODK Aggregate
+ODK_PORT?=8080
+ODK_PORT_SECURE?=8443
+DATABASE_URL?=jdbc:postgresql://db:5432/odk
+POSTGRES_USER=?postgres
+POSTGRES_PASSWORD=password
+
 FLYWAY?=https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/4.0.3/flyway-commandline-4.0.3-linux-x64.tar.gz
 ODK?=https://github.com/opendatakit/aggregate/releases/download/v1.6.1/ODK-Aggregate-v1.6.1-Linux-x64.run
+
+
+
 
 
 help:
@@ -25,12 +40,12 @@ clean:
 
 
 fullclean: clean
-	-docker rmi ${DOCKER_IMAGE}:${TARGET}
-	rm -fr .cache .venv
+	-@docker rmi ${DOCKER_IMAGE}:${TARGET}
+	-@docker rm ${PREFIX}_db_1 ${PREFIX}_adminer_1 ${PREFIX}_odk_1
+	rm -fr cache .venv
 
 
-build: clean
-	mkdir -p .cache
+build: clean cache
 	docker build ${BUILD_OPTIONS} \
 		--build-arg DEVELOP=${DEVELOP} \
 		--build-arg VERSION=${TARGET} \
@@ -54,9 +69,8 @@ build: clean
 		${CMD}
 
 cache:
-	mkdir -p .cache
-	if [ ! -f .cache/flyway.tar.gz ]; then curl -L ${FLYWAY} -o .cache/flyway.tar.gz; fi
-	if [ ! -f .cache/odk.run ]; then curl -L ${ODK} -o .cache/odk.run; fi
+	if [ ! -f cache/flyway.tar.gz ]; then curl -L ${FLYWAY} -o cache/flyway.tar.gz; fi
+	if [ ! -f cache/odk.run ]; then curl -L ${ODK} -o cache/odk.run; fi
 
 run:
 	CMD='odk' $(MAKE) .run

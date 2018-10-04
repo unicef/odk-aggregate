@@ -4,6 +4,7 @@ services:
     build:
       context: .
     image: unicef/odk:dev
+    command: odk
     ports:
       - "8080:${ODK_PORT}"
       - "8443:${ODK_PORT_SECURE}"
@@ -13,17 +14,23 @@ services:
       - db
     environment:
       - ODK_HOSTNAME
-      - ODK_ADMIN_USERNAME
+      - ODK_ADMIN_USER=admin
+      - ODK_ADMIN_USERNAME=admin
       - ODK_AUTH_REALM
       - ODK_PORT
       - ODK_PORT_SECURE
+      - DATABASE_URL
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - FLYWAY
+      - ODK
   db:
     image: postgres:9.6
     environment:
-      POSTGRES_PASSWORD:
-      POSTGRES_USER: odk
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: admin
       POSTGRES_DB: odk
   adminer:
     image: adminer
     ports:
-      - 8080:8080
+      - 8000:8080
