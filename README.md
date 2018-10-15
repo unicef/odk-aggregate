@@ -50,7 +50,7 @@ or more easily using the provided `Makefile` that creates a local cache and add 
   
 #### docker-composer
 
-a `docker-composer.yml` is provided 
+a `docker-composer.yml` is provided. 
  
 
   

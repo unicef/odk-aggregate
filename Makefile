@@ -72,6 +72,9 @@ cache:
 	if [ ! -f cache/flyway.tar.gz ]; then curl -L ${FLYWAY} -o cache/flyway.tar.gz; fi
 	if [ ! -f cache/odk.run ]; then curl -L ${ODK} -o cache/odk.run; fi
 
+info:
+	docker inspect --format "{{ index .Config.Labels }}" ${DOCKER_IMAGE}:${TARGET}
+
 run:
 	CMD='odk' $(MAKE) .run
 
