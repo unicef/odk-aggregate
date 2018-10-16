@@ -1,6 +1,6 @@
 CMD?=
 TARGET?=dev
-DOCKER_IMAGE?=unicef/odk
+DOCKER_IMAGE?=unicef/odk-aggr
 DOCKERFILE?=Dockerfile
 BUILD_OPTIONS?=--squash
 RUN_OPTIONS?=
