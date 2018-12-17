@@ -66,6 +66,7 @@ build: clean cache
 		${CMD}
 
 cache:
+	mkdir -p cache
 	if [ ! -f cache/flyway.tar.gz ]; then curl -L ${FLYWAY} -o cache/flyway.tar.gz; fi
 	if [ ! -f cache/odk.run ]; then curl -L ${ODK} -o cache/odk.run; fi
 
