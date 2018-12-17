@@ -2,7 +2,7 @@ CMD?=
 TARGET?=dev
 DOCKER_IMAGE?=unicef/odk-aggr
 DOCKERFILE?=Dockerfile
-BUILD_OPTIONS?=--squash
+BUILD_OPTIONS?=
 RUN_OPTIONS?=
 DEVELOP?="0"
 PREFIX=`basename ${PWD}`
@@ -20,9 +20,6 @@ POSTGRES_PASSWORD=password
 
 FLYWAY?=https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/4.0.3/flyway-commandline-4.0.3-linux-x64.tar.gz
 ODK?=https://github.com/opendatakit/aggregate/releases/download/v1.6.1/ODK-Aggregate-v1.6.1-Linux-x64.run
-
-
-
 
 
 help:
@@ -93,4 +90,4 @@ push:
 	docker push ${DOCKER_IMAGE}:latest
 
 
-.PHONY: run
+.PHONY: run cache

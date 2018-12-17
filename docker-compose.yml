@@ -3,7 +3,7 @@ services:
   odk:
     build:
       context: .
-    image: unicef/odk:dev
+    image: unicef/odk-aggr:dev
     command: odk
     ports:
       - "8080:${ODK_PORT}"
