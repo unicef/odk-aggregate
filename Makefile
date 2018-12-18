@@ -6,8 +6,6 @@ BUILD_OPTIONS?=
 RUN_OPTIONS?=
 DEVELOP?="0"
 PREFIX=`basename ${PWD}`
-
-
 ODK_HOSTNAME?=
 ODK_ADMIN_USER?=
 ODK_ADMIN_USERNAME?=admin
@@ -19,7 +17,7 @@ POSTGRES_USER=?postgres
 POSTGRES_PASSWORD=password
 
 FLYWAY?=https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/4.0.3/flyway-commandline-4.0.3-linux-x64.tar.gz
-ODK?=https://github.com/opendatakit/aggregate/releases/download/v1.6.1/ODK-Aggregate-v1.6.1-Linux-x64.run
+ODK?=https://github.com/opendatakit/aggregate/releases/download/v1.6.1/ODK-Aggregate-v1.6.1-Linux-x64.run.zip
 
 
 help:
@@ -39,7 +37,9 @@ clean:
 fullclean: clean
 	-@docker rmi ${DOCKER_IMAGE}:${TARGET}
 	-@docker rm ${PREFIX}_db_1 ${PREFIX}_adminer_1 ${PREFIX}_odk_1
-	rm -fr cache .venv
+	rm -fr .venv
+	rm -f cache/*.tar.gz
+	rm -f cache/*.run
 
 
 build: clean cache
@@ -67,8 +67,8 @@ build: clean cache
 
 cache:
 	mkdir -p cache
-	if [ ! -f cache/flyway.tar.gz ]; then curl -L ${FLYWAY} -o cache/flyway.tar.gz; fi
-	if [ ! -f cache/odk.run ]; then curl -L ${ODK} -o cache/odk.run; fi
+	if [ ! -f cache/flyway.tar.gz ]; then curl --fail -L ${FLYWAY} -o cache/flyway.tar.gz; fi
+	if [ ! -f cache/odk.run.zip ]; then curl --fail -L ${ODK} -o cache/odk.run.zip; fi
 
 info:
 	docker inspect --format "{{ index .Config.Labels }}" ${DOCKER_IMAGE}:${TARGET}
